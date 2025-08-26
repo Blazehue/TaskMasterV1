@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: #121212;
+  --color-foreground: #e0e0e0;
+
+  --color-card: #202020;
+  --color-card-foreground: #e0e0e0;
+
+  --color-popover: #202020;
+  --color-popover-foreground: #e0e0e0;
+
+  --color-primary: #fbe857; /* Matches TODO yellow */
+  --color-primary-foreground: #121212;
+
+  --color-secondary: #303030;
+  --color-secondary-foreground: #e0e0e0;
+
+  --color-muted: #505050;
+  --color-muted-foreground: #ffffff; /* Changed from #b0b0b0 to white */
+
+  --color-accent: #303030;
+  --color-accent-foreground: #e0e0e0;
+
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #e0e0e0;
+
+  --color-border: #404040;
+  --color-input: #404040;
+  --color-ring: #fbe857; /* Matches TODO yellow for ring */
+
+  --color-chart-1: #e67e22;
+  --color-chart-2: #2d8659;
+  --color-chart-3: #1e3a5f;
+  --color-chart-4: #f1c40f;
+  --color-chart-5: #e74c3c;
+
+  --color-sidebar: #121212;
+  --color-sidebar-foreground: #e0e0e0;
+  --color-sidebar-primary: #fbe857;
+  --color-sidebar-primary-foreground: #121212;
+  --color-sidebar-accent: #303030;
+  --color-sidebar-accent-foreground: #e0e0e0;
+  --color-sidebar-border: #404040;
+  --color-sidebar-ring: #fbe857;
+
+  --color-kanban-column-title: #ffffff; /* Changed from #7c7c7c to white */
+  --color-kanban-column-todo: #fbe857;
+  --color-kanban-column-inprogress: #87ceeb; /* Sky blue approximation */
+  --color-kanban-column-complete: #90ee90; /* Light green approximation */
+  --color-kanban-card-background: #202020;
+  --color-kanban-card-text: #e0e0e0;
+  --color-kanban-add-card-text: #ffffff; /* Changed from #7c7c7c to white */
+  --color-kanban-trash-icon: #ffffff; /* Changed from #7c7c7c to white */
+  --color-header-background: #121212;
+  --color-header-text: #e0e0e0;
+  --color-header-button-background: #5a5a5a;
+  --color-header-button-foreground: #e0e0e0;
+  --color-header-view-active-background: #6a5acd; /* MediumSlateBlue approximate */
+  --color-header-view-active-foreground: #ffffff;
+  --color-free-tag-background: #d4edda; /* Light green */
+  --color-free-tag-text: #155724; /* Dark green */
+
+  /* Kanban specific colors */
+  --color-column-background: #303030;
+
+  --font-sans: 'Inter', sans-serif;
+
+  --radius-lg: 0; /* No rounding for sharp edges */
+  --radius-md: 0;
+  --radius-sm: 0;
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+}
+
+@layer utilities {
+  body {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer base {
+  :root {
+    --background: var(--color-background);
+    --foreground: var(--color-foreground);
+    --card: var(--color-card);
+    --card-foreground: var(--color-card-foreground);
+    --popover: var(--color-popover);
+    --popover-foreground: var(--color-popover-foreground);
+    --primary: var(--color-primary);
+    --primary-foreground: var(--color-primary-foreground);
+    --secondary: var(--color-secondary);
+    --secondary-foreground: var(--color-secondary-foreground);
+    --muted: var(--color-muted);
+    --muted-foreground: var(--color-muted-foreground);
+    --accent: var(--color-accent);
+    --accent-foreground: var(--color-accent-foreground);
+    --destructive: var(--color-destructive);
+    --destructive-foreground: var(--color-destructive-foreground);
+    --border: var(--color-border);
+    --input: var(--color-input);
+    --ring: var(--color-ring);
+    --chart-1: var(--color-chart-1);
+    --chart-2: var(--color-chart-2);
+    --chart-3: var(--color-chart-3);
+    --chart-4: var(--color-chart-4);
+    --chart-5: var(--color-chart-5);
+    --radius: 0; /* No rounding */
+    --sidebar-background: var(--color-sidebar);
+    --sidebar-foreground: var(--color-sidebar-foreground);
+    --sidebar-primary: var(--color-sidebar-primary);
+    --sidebar-primary-foreground: var(--color-sidebar-primary-foreground);
+    --sidebar-accent: var(--color-sidebar-accent);
+    --sidebar-accent-foreground: var(--color-sidebar-accent-foreground);
+    --sidebar-border: var(--color-sidebar-border);
+    --sidebar-ring: var(--color-sidebar-ring);
+
+    /* Custom Kanban Colors */
+    --kanban-column-title: var(--color-kanban-column-title);
+    --kanban-column-todo: var(--color-kanban-column-todo);
+    --kanban-column-inprogress: var(--color-kanban-column-inprogress);
+    --kanban-column-complete: var(--color-kanban-column-complete);
+    --kanban-card-background: var(--color-kanban-card-background);
+    --kanban-card-text: var(--color-kanban-card-text);
+    --kanban-add-card-text: var(--color-kanban-add-card-text);
+    --kanban-trash-icon: var(--color-kanban-trash-icon);
+    --header-background: var(--color-header-background);
+    --header-text: var(--color-header-text);
+    --header-button-background: var(--color-header-button-background);
+    --header-button-foreground: var(--color-header-button-foreground);
+    --header-view-active-background: var(--color-header-view-active-background);
+    --header-view-active-foreground: var(--color-header-view-active-foreground);
+    --free-tag-background: var(--color-free-tag-background);
+    --free-tag-text: var(--color-free-tag-text);
+    
+    /* Kanban specific */
+    --columnBackgroundColor: var(--color-column-background);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+
+  .container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--foreground);
+  }
+
+  /* Specific styles for the Kanban board seen in the image */
+  .kanban-column-title {
+    color: var(--kanban-column-title);
+  }
+
+  .kanban-column-todo-text {
+    color: var(--kanban-column-todo);
+  }
+
+  .kanban-column-inprogress-text {
+    color: var(--kanban-column-inprogress);
+  }
+
+  .kanban-column-complete-text {
+    color: var(--kanban-column-complete);
+  }
+
+  .kanban-card {
+    background-color: var(--kanban-card-background);
+    color: var(--kanban-card-text);
+  }
+
+  .kanban-add-card-text {
+    color: var(--kanban-add-card-text);
+  }
+
+  .kanban-trash-icon {
+    color: var(--kanban-trash-icon);
+  }
+
+  .app-header {
+    background-color: var(--header-background);
+    color: var(--header-text);
+  }
+
+  .header-button {
+    background-color: var(--header-button-background);
+    color: var(--header-button-foreground);
+  }
+
+  .header-view-active-button {
+    background-color: var(--header-view-active-background);
+    color: var(--header-view-active-foreground);
+  }
+
+  .free-tag {
+    background-color: var(--free-tag-background);
+    color: var(--free-tag-text);
+  }
+}
