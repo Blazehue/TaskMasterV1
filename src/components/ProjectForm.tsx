@@ -28,10 +28,17 @@ const upcomingTaskSchema = z.object({
 
 const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
   category: z.enum(["Design", "Development", "Marketing", "Research", "Infrastructure"]),
+  description: z.string().optional(),
   dueDate: z.string().optional(),
-  upcomingTasks: z.array(upcomingTaskSchema).optional().default([]),
+  upcomingTasks: z.array(
+    z.object({
+      title: z.string().min(1, "Task title is required"),
+      priority: z.enum(["low", "medium", "high"]),
+      description: z.string().optional(),
+      dueDate: z.string().optional(),
+    })
+  ).default([]),  // ✅ required but defaults to empty array
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
