@@ -57,20 +57,15 @@ export const ProjectForm = ({ isOpen, onClose, onSuccess }: ProjectFormProps) =>
   const [errorMessage, setErrorMessage] = useState("");
 
   const form = useForm<ProjectFormData>({
-    resolver: zodResolver(projectSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      category: "Development",
-      dueDate: "",
-      upcomingTasks: [],
-    },
-  });
-  
-  const { fields, append, remove, move } = useFieldArray({
-    control: form.control,
-    name: "upcomingTasks",
-  });
+  resolver: zodResolver(projectSchema),
+  defaultValues: {
+    title: "",
+    description: "",
+    category: "Design",
+    dueDate: "",
+    upcomingTasks: [],   // ✅ must be added
+  },
+});
 
   const onSubmit = async (data: ProjectFormData) => {
     setIsLoading(true);
