@@ -38,7 +38,7 @@ const projectSchema = z.object({
       description: z.string().optional(),
       dueDate: z.string().optional(),
     })
-  ).default([]),  // ✅ required but defaults to empty array
+  ).default([]).transform(tasks => tasks ?? []),  // ✅ required but defaults to empty array
 });
 
 type ProjectFormData = z.infer<typeof projectSchema>;
