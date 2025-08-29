@@ -34,18 +34,16 @@ Includes **Drizzle ORM** scaffolding for typed, migration-first database workflo
 - **ORM (Optional):** Drizzle ORM  
 - **Deployment:** Vercel  
 
----
-
 ## 📁 Project Structure
 
-
+```bash
 TaskMasterV1/
 ├── dist/                  # Production build output (generated after build)
 ├── drizzle/               # Drizzle ORM migrations & schema files
 ├── public/                # Static assets (served as-is)
 ├── src/                   # Application source code
 │   ├── components/        # Reusable React components
-│   ├── pages/             # Page-level components (if applicable)
+│   ├── pages/             # Page-level components
 │   ├── hooks/             # Custom React hooks
 │   ├── styles/            # Tailwind / global styles
 │   ├── utils/             # Helper functions
