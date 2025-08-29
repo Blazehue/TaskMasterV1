@@ -60,9 +60,10 @@ TaskMasterV1/
 ├── tsconfig.node.json     # TS config for Node tooling
 └── vite.config.ts         # Vite build configuration
 
+```
 
 
----
+
 
 ## ⚙️ Prerequisites
 
