@@ -1,159 +1,135 @@
-TaskMaster V1
+# 📝 TaskMaster V1
 
-A lightweight, fast task management web app built with React + TypeScript and Vite, styled with Tailwind CSS. The project includes Drizzle ORM scaffolding for a typed, migration-first database workflow and is deployable to Vercel.
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)  
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)  
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)  
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)  
+[![Drizzle](https://img.shields.io/badge/Drizzle-FFBE2E?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)  
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-Live demo: task-master-v1-seven.vercel.app 
-GitHub
+---
 
-✨ Features
+A lightweight, fast **task management web app** built with **React + TypeScript** and **Vite**, styled with **Tailwind CSS**.  
+Includes **Drizzle ORM** scaffolding for typed, migration-first database workflows and deployable on **Vercel**.
 
-⚡ Fast dev/build powered by Vite.
+🔗 **Live Demo:** [task-master-v1-seven.vercel.app](https://task-master-v1-seven.vercel.app)
 
-🧩 Typed components with TypeScript.
+---
 
-🎨 Tailwind CSS utility-first styling.
+## ✨ Features
 
-🗃️ (Optional) Drizzle ORM migrations & schema (see drizzle/).
+- ⚡ Lightning-fast dev/build with **Vite**
+- 🧩 Strictly typed components with **TypeScript**
+- 🎨 Beautiful UI with **Tailwind CSS**
+- 🗃️ Optional **Drizzle ORM** setup for database + migrations
+- 🚀 Ready-to-deploy on **Vercel**
 
-🚀 One-click deploy to Vercel (link present in repo). 
-GitHub
+---
 
-Note: The repo contains dist/, public/, src/, drizzle/, and config files including vite.config.ts, tailwind.config.js, and drizzle.config.ts. Languages reported by GitHub: TypeScript (≈92%), JavaScript, CSS, and HTML. 
-GitHub
+## 🧱 Tech Stack
 
-🧱 Tech Stack
+- **Frontend:** React, TypeScript, Vite  
+- **Styling:** Tailwind CSS  
+- **ORM (Optional):** Drizzle ORM  
+- **Deployment:** Vercel  
 
-Frontend: React, TypeScript, Vite
+---
 
-Styling: Tailwind CSS
+## 📁 Project Structure
 
-ORM (optional): Drizzle ORM (with drizzle/ directory and drizzle.config.ts)
-
-Deployment: Vercel
-
-If you’re also using shadcn/ui or lucide-react, add them here.
-
-📁 Project Structure
 TaskMasterV1/
-├─ dist/                 # Production build output
-├─ drizzle/              # Drizzle migrations & schema (if used)
-├─ public/               # Static assets
-├─ src/                  # App source (components, hooks, pages, etc.)
-├─ index.html            # Vite entry HTML
-├─ vite.config.ts        # Vite config
-├─ tailwind.config.js    # Tailwind config
-├─ postcss.config.mjs    # PostCSS config
-├─ drizzle.config.ts     # Drizzle config
-├─ tsconfig*.json        # TypeScript configs
-└─ package.json          # Scripts & dependencies
+├─ dist/ # Production build output
+├─ drizzle/ # Drizzle migrations & schema
+├─ public/ # Static assets
+├─ src/ # App source (components, hooks, pages, etc.)
+├─ index.html # Vite entry HTML
+├─ vite.config.ts # Vite config
+├─ tailwind.config.js # Tailwind config
+├─ postcss.config.mjs # PostCSS config
+├─ drizzle.config.ts # Drizzle config
+├─ tsconfig*.json # TypeScript configs
+└─ package.json # Scripts & dependencies
 
+yaml
+Copy code
 
-The repository listing verifies these files/folders are present. 
-GitHub
+---
 
-⚙️ Prerequisites
+## ⚙️ Prerequisites
 
-Node.js ≥ 18 (recommended)
+- **Node.js** ≥ 18  
+- **Package Manager:** npm / pnpm / yarn / bun  
+  _(a `bun.lock` exists → Bun is supported)_  
 
-Package manager: npm, pnpm, yarn, or bun (a bun.lock exists—use Bun if you prefer). 
-GitHub
+---
 
-🚀 Getting Started
+## 🚀 Getting Started
 
-Clone and install:
-
+### 1. Clone and Install
+```bash
 git clone https://github.com/Blazehue/TaskMasterV1.git
 cd TaskMasterV1
 
 # choose one
 npm install
 # pnpm install
-# yarn
+# yarn install
 # bun install
-
-
-Start the dev server:
-
-# choose one
+2. Run Development Server
+bash
+Copy code
 npm run dev
-# pnpm dev
-# yarn dev
-# bun dev
-
-
-Build & preview:
-
+3. Build & Preview
+bash
+Copy code
 npm run build
 npm run preview
-
-
-If your scripts differ, update this section after checking package.json.
-
 🔐 Environment Variables
+Copy .env.example → .env.local
 
-There’s an env.example in the repo. Copy it to create your local env file:
-
+bash
+Copy code
 cp env.example .env.local
+Fill in values (e.g., DATABASE_URL, etc.).
 
+🗄️ Database (Drizzle ORM)
+If using Drizzle:
 
-Fill in the variables as needed (e.g., DATABASE_URL, etc.).
-
-I couldn’t open the exact contents of env.example via the viewer; add precise keys here if needed. 
-GitHub
-
-🗄️ Database & Migrations (Drizzle)
-
-If you’re using Drizzle:
-
-Configure your DB connection in .env.local per drizzle.config.ts.
-
-Generate migrations from schema:
-
+bash
+Copy code
+# Generate migrations
 npx drizzle-kit generate
 
-
-Push/apply migrations:
-
+# Push migrations
 npx drizzle-kit push
 
-
-(Optional) Studio:
-
+# Open studio
 npx drizzle-kit studio
-
-
-Adjust commands if you’re using project-local scripts.
-
 🧪 Linting & Formatting
-
-Typical scripts (verify in package.json):
-
+bash
+Copy code
 npm run lint
 npm run format
+📦 Deployment (Vercel)
+Push to GitHub
 
-📦 Deployment
+Import repo into Vercel
 
-The repository links to a Vercel deployment. For a fresh deployment:
+Configure env variables in Vercel
 
-Push the repo to GitHub.
+Deploy 🎉
 
-Import the project in Vercel.
-
-Set environment variables in Vercel Project Settings.
-
-Trigger a production build.
-
-Live link shown on the repo: task-master-v1-seven.vercel.app. 
-GitHub
+Live link: task-master-v1-seven.vercel.app
 
 🙌 Contributing
+Fork this repo
 
-Fork the repo
+Create a branch → git checkout -b feat/awesome-feature
 
-Create a feature branch: git checkout -b feat/awesome-thing
+Commit → git commit -m "feat: add awesome feature"
 
-Commit: git commit -m "feat: add awesome thing"
+Push → git push origin feat/awesome-feature
 
-Push: git push origin feat/awesome-thing
+Open a PR 🚀
 
-Open a Pull Request
