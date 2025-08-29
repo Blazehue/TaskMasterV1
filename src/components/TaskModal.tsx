@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { X, Calendar, Flag, Folder, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -7,15 +5,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
-export interface Task {
-  id?: string
-  title: string
-  description: string
-  dueDate: string
-  priority: "low" | "medium" | "high"
-  project: string
-  xpReward: number
-  status?: "todo" | "inprogress" | "complete"
+import { Task } from "@/types";
+
+// Simple ID generator
+const generateId = () => Math.random().toString(36).substr(2, 9);
+
+// Update the interface to match the unified Task type
+interface TaskFormData extends Omit<Task, 'id'> {
+  id?: string;
 }
 
 interface TaskModalProps {
@@ -27,13 +24,14 @@ interface TaskModalProps {
   projects?: string[]
 }
 
-const DEFAULT_TASK: Task = {
+const DEFAULT_TASK: TaskFormData = {
   title: "",
   description: "",
   dueDate: "",
   priority: "medium",
   project: "",
   xpReward: 100,
+  status: "todo"
 }
 
 const PRIORITY_OPTIONS = [
@@ -52,7 +50,7 @@ export default function TaskModal({
   task,
   projects = ["Personal", "Work", "Side Project"],
 }: TaskModalProps) {
-  const [formData, setFormData] = useState<Task>(DEFAULT_TASK)
+  const [formData, setFormData] = useState<TaskFormData>(DEFAULT_TASK)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const isEditing = Boolean(task?.id)
@@ -101,7 +99,12 @@ export default function TaskModal({
 
   const handleSave = () => {
     if (validateForm()) {
-      onSave(formData)
+      // Ensure we have a valid Task object with required id
+      const taskToSave: Task = {
+        ...formData,
+        id: formData.id || generateId(), // Generate id if not present
+      }
+      onSave(taskToSave)
       onClose()
     }
   }

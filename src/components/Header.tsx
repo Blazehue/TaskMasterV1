@@ -1,5 +1,3 @@
-"use client"
-
 import { User, Settings, Trophy, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +25,7 @@ interface HeaderProps {
   onThemeToggle?: () => void
   onSettingsClick?: () => void
   onProfileClick?: () => void
+  isDarkMode?: boolean
 }
 
 export default function Header({ 

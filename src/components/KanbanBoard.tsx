@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState, useCallback } from "react"
 import {
   DndContext,
@@ -23,10 +21,8 @@ import {
   useSortable,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Plus, Grip, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Plus, Grip } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
 
 type Id = string | number
 type ColumnType = "todo" | "doing" | "done"
@@ -37,22 +33,13 @@ interface Column {
   type: ColumnType
 }
 
-interface Task {
-  id: string
-  title: string
-  description?: string
-  status: "todo" | "inprogress" | "complete"
-  priority: "low" | "medium" | "high"
-  dueDate: string
-  project: string
-  xpReward: number
-}
+import { Task } from "@/types"
 
 interface KanbanTask {
   id: Id
   columnId: Id
   title: string
-  description?: string
+  description: string
   originalTask?: Task
 }
 
@@ -92,7 +79,7 @@ const convertTasksToKanbanTasks = (tasks: Task[]): KanbanTask[] => {
     id: task.id,
     columnId: task.status === "todo" ? "todo" : task.status === "inprogress" ? "doing" : task.status === "complete" ? "done" : "backlog",
     title: task.title,
-    description: task.description,
+    description: task.description || "",
     originalTask: task
   }))
 }
@@ -118,7 +105,7 @@ function TaskCard({ task, isOverlay, onTaskClick }: { task: KanbanTask; isOverla
     transform: CSS.Transform.toString(transform),
   }
 
-  const [mouseIsOver, setMouseIsOver] = useState(false)
+
 
   if (isDragging) {
     return (
@@ -147,7 +134,6 @@ function TaskCard({ task, isOverlay, onTaskClick }: { task: KanbanTask; isOverla
       {...attributes}
       {...listeners}
       onClick={() => {
-        setMouseIsOver(false)
         if (task.originalTask && onTaskClick) {
           onTaskClick(task.originalTask)
         }
@@ -162,12 +148,7 @@ function TaskCard({ task, isOverlay, onTaskClick }: { task: KanbanTask; isOverla
         active:transform active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
         group
       `}
-      onMouseEnter={() => {
-        setMouseIsOver(true)
-      }}
-      onMouseLeave={() => {
-        setMouseIsOver(false)
-      }}
+
       tabIndex={0}
       role="button"
       aria-label={`Task: ${task.title}. Press Enter or Space to open, or use arrow keys to move between tasks.`}
@@ -306,7 +287,7 @@ function ColumnContainer({ column, tasks, onTaskClick }: { column: Column; tasks
   )
 }
 
-export default function KanbanBoard({ className = "", tasks = [], onTaskClick, onAddTask, onTaskUpdate }: KanbanBoardProps) {
+export default function KanbanBoard({ className = "", tasks = [], onTaskClick, onTaskUpdate }: KanbanBoardProps) {
   const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS)
   const [kanbanTasks, setKanbanTasks] = useState<KanbanTask[]>(() => convertTasksToKanbanTasks(tasks))
   
@@ -332,17 +313,8 @@ export default function KanbanBoard({ className = "", tasks = [], onTaskClick, o
   // Function to update task status in backend
   const updateTaskStatus = useCallback(async (taskId: string, newStatus: string) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
-      })
-      
-      if (!response.ok) {
-        throw new Error('Failed to update task status')
-      }
+      const { api } = await import('@/lib/data');
+      await api.tasks.updateStatus(taskId, newStatus as any);
     } catch (error) {
       console.error('Error updating task status:', error)
       // You might want to show a toast notification here
@@ -405,56 +377,17 @@ export default function KanbanBoard({ className = "", tasks = [], onTaskClick, o
     </div>
   )
 
-  function createNewColumn() {
-    const columnToAdd: Column = {
-      id: generateId(),
-      title: `Column ${columns.length + 1}`,
-      type: "todo",
-    }
 
-    setColumns([...columns, columnToAdd])
-  }
 
-  function deleteColumn(id: Id) {
-    const filteredColumns = columns.filter((col) => col.id !== id)
-    setColumns(filteredColumns)
 
-    const newTasks = kanbanTasks.filter((t) => t.columnId !== id)
-    setKanbanTasks(newTasks)
-  }
 
-  function updateColumn(id: Id, title: string) {
-    const newColumns = columns.map((col) => {
-      if (col.id !== id) return col
-      return { ...col, title }
-    })
 
-    setColumns(newColumns)
-  }
 
-  function createTask(columnId: Id) {
-    const newTask: KanbanTask = {
-      id: generateId(),
-      columnId,
-      title: `Task ${kanbanTasks.length + 1}`,
-    }
 
-    setKanbanTasks([...kanbanTasks, newTask])
-  }
 
-  function deleteTask(id: Id) {
-    const newTasks = kanbanTasks.filter((task) => task.id !== id)
-    setKanbanTasks(newTasks)
-  }
 
-  function updateTask(id: Id, title: string) {
-    const newTasks = kanbanTasks.map((task) => {
-      if (task.id !== id) return task
-      return { ...task, title }
-    })
 
-    setKanbanTasks(newTasks)
-  }
+
 
   function onDragStart(event: DragStartEvent) {
     if (event.active.data.current?.type === "Column") {
@@ -552,10 +485,10 @@ export default function KanbanBoard({ className = "", tasks = [], onTaskClick, o
   }
   
   // Helper function to convert column ID to task status
-  function getStatusFromColumnId(columnId: string): string {
+  function getStatusFromColumnId(columnId: string): Task['status'] {
     switch (columnId) {
       case 'backlog':
-        return 'backlog'
+        return 'todo'
       case 'todo':
         return 'todo'
       case 'doing':
@@ -568,7 +501,3 @@ export default function KanbanBoard({ className = "", tasks = [], onTaskClick, o
   }
 }
 
-function generateId() {
-  /* Generate a random number between 0 and 10000 */
-  return Math.floor(Math.random() * 10001)
-}

@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -20,7 +18,7 @@ interface TaskFormData {
   description?: string;
   projectId: string;
   priority: 'low' | 'medium' | 'high';
-  status: 'todo' | 'doing' | 'done';
+  status: 'todo' | 'inprogress' | 'complete';
   xpReward: number;
   dueDate: string;
 }
@@ -52,9 +50,8 @@ export const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, onSuccess }
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('/api/projects');
-        if (!response.ok) throw new Error('Failed to fetch projects');
-        const projectsData = await response.json();
+        const { api } = await import('@/lib/data');
+        const projectsData = await api.projects.getAll();
         setProjects(projectsData);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -79,21 +76,12 @@ export const TaskForm: React.FC<TaskFormProps> = ({ isOpen, onClose, onSuccess }
     setErrorMessage('');
 
     try {
-      const response = await fetch('/api/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          projectId: data.projectId ? parseInt(data.projectId) : null,
-        }),
+      const { api } = await import('@/lib/data');
+      await api.tasks.create({
+        ...data,
+        description: data.description || '',
+        project: data.projectId ? projects.find(p => p.id === parseInt(data.projectId))?.title || '' : '',
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create task');
-      }
 
       setSubmissionState('success');
       setTimeout(() => {

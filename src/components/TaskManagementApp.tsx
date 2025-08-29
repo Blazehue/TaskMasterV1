@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import React from "react";
+
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import Dashboard from "@/components/Dashboard";
@@ -9,7 +7,8 @@ import ProjectGrid from "@/components/ProjectGrid";
 import KanbanBoard from "@/components/KanbanBoard";
 import Calendar from "@/components/Calendar";
 import BadgeGallery from "@/components/BadgeGallery";
-import TaskModal, { Task } from "@/components/TaskModal";
+import TaskModal from "@/components/TaskModal";
+import { Task } from "@/types";
 
 type ViewType = "dashboard" | "projects" | "kanban" | "calendar" | "profile";
 
@@ -30,8 +29,7 @@ export default function TaskManagementApp() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
-  const [userStats, setUserStats] = useState<UserStats>({
+  const [userStats] = useState<UserStats>({
     xp: 750,
     maxXp: 1000,
     level: 5,
@@ -74,22 +72,7 @@ export default function TaskManagementApp() {
     }
   ]);
   
-  // Load upcoming tasks on component mount
-  React.useEffect(() => {
-    const fetchUpcomingTasks = async () => {
-      try {
-        const response = await fetch('/api/upcoming-tasks?limit=10&sort=dueDate&order=asc');
-        if (response.ok) {
-          const data = await response.json();
-          setUpcomingTasks(data);
-        }
-      } catch (error) {
-        console.error('Error fetching upcoming tasks:', error);
-      }
-    };
-    
-    fetchUpcomingTasks();
-  }, []);
+
 
   const handleThemeToggle = () => {
     setIsDarkMode(!isDarkMode);
@@ -97,33 +80,16 @@ export default function TaskManagementApp() {
 
   const handleTaskSave = async (task: Task) => {
     try {
+      const { api } = await import('@/lib/data');
+      
       if (selectedTask && selectedTask.id) {
         // Update existing task
-        const response = await fetch(`/api/tasks/${task.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(task),
-        });
-        
-        if (response.ok) {
-          setTasks(tasks.map(t => t.id === task.id ? task : t));
-        }
+        const updatedTask = await api.tasks.update(task.id, task);
+        setTasks(tasks.map(t => t.id === task.id ? updatedTask : t));
       } else {
         // Create new task
-        const response = await fetch('/api/tasks', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(task),
-        });
-        
-        if (response.ok) {
-          const newTask = await response.json();
-          setTasks([...tasks, { ...task, id: newTask.id.toString() }]);
-        }
+        const newTask = await api.tasks.create(task);
+        setTasks([...tasks, newTask]);
       }
     } catch (error) {
       console.error('Error saving task:', error);
@@ -135,13 +101,9 @@ export default function TaskManagementApp() {
 
   const handleTaskDelete = async (taskId: string) => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        setTasks(tasks.filter(t => t.id !== taskId));
-      }
+      const { api } = await import('@/lib/data');
+      await api.tasks.delete(taskId);
+      setTasks(tasks.filter(t => t.id !== taskId));
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -155,20 +117,7 @@ export default function TaskManagementApp() {
     setIsTaskModalOpen(true);
   };
 
-  const handleDateClick = (date: Date) => {
-    const newTask: Task = {
-      id: "",
-      title: "",
-      description: "",
-      status: "todo",
-      priority: "medium",
-      dueDate: date.toISOString().split('T')[0],
-      project: "",
-      xpReward: 100
-    };
-    setSelectedTask(newTask);
-    setIsTaskModalOpen(true);
-  };
+
 
   const handleAddTask = () => {
     const newTask: Task = {
@@ -199,15 +148,15 @@ export default function TaskManagementApp() {
   const renderMainContent = () => {
     switch (activeView) {
       case "dashboard":
-        return <Dashboard userStats={userStats} tasks={tasks} onTaskClick={handleTaskClick} upcomingTasks={upcomingTasks} />;
+        return <Dashboard userStats={userStats} tasks={tasks} onTaskClick={handleTaskClick} />;
       case "projects":
         return <ProjectGrid />;
       case "kanban":
         return <KanbanBoard tasks={tasks} onTaskClick={handleTaskClick} onAddTask={handleAddTask} onTaskUpdate={handleTaskStatusUpdate} />;
       case "calendar":
-        return <Calendar tasks={tasks} onDateClick={handleDateClick} onTaskClick={handleTaskClick} />;
+        return <Calendar tasks={tasks} onTaskClick={handleTaskClick} />;
       case "profile":
-        return <BadgeGallery userStats={userStats} />;
+        return <BadgeGallery />;
       default:
         return <Dashboard userStats={userStats} tasks={tasks} onTaskClick={handleTaskClick} />;
     }
@@ -223,11 +172,8 @@ export default function TaskManagementApp() {
       />
       <div className="flex-1 flex flex-col">
         <Header 
-          activeView={activeView}
-          onViewChange={setActiveView}
           isDarkMode={isDarkMode}
           onThemeToggle={handleThemeToggle}
-          onAddTask={handleAddTask}
         />
         <main className="flex-1 bg-background">
           {renderMainContent()}

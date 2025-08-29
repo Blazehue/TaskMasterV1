@@ -1,26 +1,6 @@
-"use client"
 
-import { useState } from "react"
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-interface Task {
-  id: string
-  title: string
-  description?: string
-  status: "todo" | "inprogress" | "complete"
-  priority: "low" | "medium" | "high"
-  dueDate: string
-  project: string
-  xpReward: number
-}
-
-interface UserStats {
-  xp: number
-  maxXp: number
-  level: number
-  streak: number
-}
+import { Task, UserStats } from "@/types"
 
 interface DashboardProps {
   className?: string

@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  category: z.enum(["Work", "Personal", "Other"], {
-    required_error: "Category is required",
-  }),
+  category: z.enum(["Work", "Personal", "Other"]),
   description: z.string().optional(),
   dueDate: z.string().optional(),
   tasks: z
@@ -17,17 +15,53 @@ const projectSchema = z.object({
 type ProjectFormData = z.infer<typeof projectSchema>;
 
 interface ProjectFormProps {
-  onSubmit: (data: ProjectFormData) => void;
+  isOpen?: boolean;
+  onClose?: () => void;
+  onSuccess?: () => void;
+  onSubmit?: (data: ProjectFormData) => void;
 }
 
-export default function ProjectForm({ onSubmit }: ProjectFormProps) {
-  const { register, handleSubmit, control, formState: { errors } } =
+export default function ProjectForm({ isOpen, onClose, onSuccess, onSubmit }: ProjectFormProps) {
+  const { register, handleSubmit, control, formState: { errors }, reset } =
     useForm<ProjectFormData>({ resolver: zodResolver(projectSchema) });
 
   const { fields, append, remove } = useFieldArray({ control, name: "tasks" });
 
+  const handleFormSubmit = async (data: ProjectFormData) => {
+    try {
+      if (onSubmit) {
+        await onSubmit(data);
+      }
+      if (onSuccess) {
+        onSuccess();
+      }
+      reset();
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Create New Project</h2>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div>
         <label className="block text-sm font-medium">Title</label>
         <input {...register("title")} className="border rounded p-2 w-full" />
@@ -60,7 +94,7 @@ export default function ProjectForm({ onSubmit }: ProjectFormProps) {
         {fields.map((field, index) => (
           <div key={field.id} className="flex space-x-2 mb-2">
             <input
-              {...register(	asks..name)}
+              {...register(`tasks.${index}.name`)}
               className="border rounded p-2 flex-1"
               placeholder="Task name"
             />
@@ -78,6 +112,8 @@ export default function ProjectForm({ onSubmit }: ProjectFormProps) {
       <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
         Create Project
       </button>
-    </form>
+        </form>
+      </div>
+    </div>
   );
 }

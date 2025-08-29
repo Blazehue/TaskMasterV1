@@ -1,20 +1,7 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import { Plus, Users, Calendar, Filter, ChevronDown, Loader2 } from "lucide-react"
-import { ProjectForm } from "./ProjectForm"
-
-interface Project {
-  id: number
-  title: string
-  description: string
-  taskCount: number
-  completedTasks: number
-  dueDate: string | null
-  category: string | null
-  createdAt: string
-  updatedAt: string
-}
+import { Plus, Calendar, Filter, ChevronDown, Loader2 } from "lucide-react"
+import ProjectForm from "./ProjectForm"
+import { Project } from "@/types"
 
 interface ProjectGridProps {
   onProjectClick?: (project: Project) => void
@@ -35,11 +22,8 @@ export default function ProjectGrid({
   const fetchProjects = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/projects')
-      if (!response.ok) {
-        throw new Error('Failed to fetch projects')
-      }
-      const data = await response.json()
+      const { api } = await import('@/lib/data')
+      const data = await api.projects.getAll()
       setProjects(data)
       setError(null)
     } catch (err) {
@@ -53,7 +37,7 @@ export default function ProjectGrid({
     fetchProjects()
   }, [])
 
-  const categories = Array.from(new Set(projects.map(p => p.category).filter(Boolean)))
+  const categories = Array.from(new Set(projects.map(p => p.category).filter((category): category is string => category !== null)))
 
   const filteredAndSortedProjects = projects
     .filter(project => 

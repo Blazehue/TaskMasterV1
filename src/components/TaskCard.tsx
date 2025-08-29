@@ -1,25 +1,20 @@
-"use client"
-
 import { useState } from "react"
 import { Edit, Trash2, Clock, Flag, CheckCircle, Circle, Play } from "lucide-react"
 import { motion } from "motion/react"
 
-export interface Task {
-  id: string
-  title: string
-  description?: string
-  dueDate?: Date
-  priority: "low" | "medium" | "high"
-  status: "pending" | "in-progress" | "completed"
-  xpReward?: number
+import { Task } from "@/types"
+
+// Extend the unified Task interface for this component's needs
+interface TaskCardData extends Omit<Task, 'dueDate'> {
+  dueDate?: Date;
 }
 
 interface TaskCardProps {
-  task: Task
+  task: TaskCardData
   className?: string
-  onEdit?: (task: Task) => void
+  onEdit?: (task: TaskCardData) => void
   onDelete?: (taskId: string) => void
-  onStatusChange?: (taskId: string, status: Task["status"]) => void
+  onStatusChange?: (taskId: string, status: TaskCardData["status"]) => void
   isDragging?: boolean
   dragHandleProps?: any
 }
@@ -31,9 +26,9 @@ const priorityConfig = {
 }
 
 const statusConfig = {
-  pending: { icon: Circle, color: "text-muted-foreground" },
-  "in-progress": { icon: Play, color: "text-blue-500" },
-  completed: { icon: CheckCircle, color: "text-green-500" }
+  todo: { icon: Circle, color: "text-muted-foreground" },
+  inprogress: { icon: Play, color: "text-blue-500" },
+  complete: { icon: CheckCircle, color: "text-green-500" }
 }
 
 export default function TaskCard({
@@ -41,7 +36,7 @@ export default function TaskCard({
   className = "",
   onEdit,
   onDelete,
-  onStatusChange,
+
   isDragging = false,
   dragHandleProps
 }: TaskCardProps) {
@@ -59,7 +54,7 @@ export default function TaskCard({
     return `Overdue by ${Math.abs(diffDays)} days`
   }
 
-  const isOverdue = task.dueDate && task.dueDate < new Date() && task.status !== "completed"
+  const isOverdue = task.dueDate && task.dueDate < new Date() && task.status !== "complete"
 
   return (
     <motion.div
@@ -86,9 +81,9 @@ export default function TaskCard({
       {/* Status indicator bar */}
       <div 
         className={`absolute top-0 left-0 w-full h-1 ${
-          task.status === "completed" 
+          task.status === "complete" 
             ? "bg-green-500" 
-            : task.status === "in-progress" 
+            : task.status === "inprogress" 
             ? "bg-blue-500" 
             : "bg-muted"
         }`} 
@@ -104,7 +99,7 @@ export default function TaskCard({
               }`} 
             />
             <h3 className={`font-semibold text-sm leading-tight truncate ${
-              task.status === "completed" ? "line-through opacity-75" : ""
+              task.status === "complete" ? "line-through opacity-75" : ""
             }`}>
               {task.title}
             </h3>

@@ -1,7 +1,4 @@
-"use client"
-
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { Link, useLocation } from "react-router-dom"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, FolderOpen, Calendar, Columns3 } from "lucide-react"
 
@@ -29,13 +26,14 @@ const navigationItems = [
 ]
 
 export default function Navigation({ className }: { className?: string }) {
-  const pathname = usePathname()
+  const location = useLocation()
+  const pathname = location.pathname
 
   return (
     <nav className={cn("bg-black border-b-4 border-white", className)}>
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-2xl font-black font-mono tracking-wider text-white uppercase">
+          <Link to="/" className="text-2xl font-black font-mono tracking-wider text-white uppercase">
             TASKMASTER PRO
           </Link>
           
@@ -46,10 +44,10 @@ export default function Navigation({ className }: { className?: string }) {
                               (pathname === "/" && item.href === "/dashboard")
               
               return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
+                                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={cn(
                     "px-4 py-2 text-sm font-mono font-bold uppercase tracking-wide transition-all duration-200",
                     "border-2 border-white bg-black text-white",
                     "hover:bg-white hover:text-black hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]",
