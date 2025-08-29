@@ -38,21 +38,31 @@ Includes **Drizzle ORM** scaffolding for typed, migration-first database workflo
 
 ## 📁 Project Structure
 
-TaskMasterV1/
-├─ dist/ # Production build output
-├─ drizzle/ # Drizzle migrations & schema
-├─ public/ # Static assets
-├─ src/ # App source (components, hooks, pages, etc.)
-├─ index.html # Vite entry HTML
-├─ vite.config.ts # Vite config
-├─ tailwind.config.js # Tailwind config
-├─ postcss.config.mjs # PostCSS config
-├─ drizzle.config.ts # Drizzle config
-├─ tsconfig*.json # TypeScript configs
-└─ package.json # Scripts & dependencies
 
-yaml
-Copy code
+TaskMasterV1/
+├── dist/                  # Production build output (generated after build)
+├── drizzle/               # Drizzle ORM migrations & schema files
+├── public/                # Static assets (served as-is)
+├── src/                   # Application source code
+│   ├── components/        # Reusable React components
+│   ├── pages/             # Page-level components (if applicable)
+│   ├── hooks/             # Custom React hooks
+│   ├── styles/            # Tailwind / global styles
+│   ├── utils/             # Helper functions
+│   └── main.tsx           # App entry point
+│
+├── .gitignore             # Git ignored files
+├── drizzle.config.ts      # Drizzle ORM configuration
+├── env.example            # Example environment variables
+├── index.html             # Vite entry HTML
+├── package.json           # Project metadata & scripts
+├── postcss.config.mjs     # PostCSS configuration
+├── tailwind.config.js     # TailwindCSS configuration
+├── tsconfig.json          # TypeScript configuration
+├── tsconfig.node.json     # TS config for Node tooling
+└── vite.config.ts         # Vite build configuration
+
+
 
 ---
 
